@@ -23,7 +23,16 @@ This is an Android App that has integration with The Movie Database API (https:/
 * Code review
 * Other guidelines
 
+## Built With
+
+* [Android SDK](https://) - xxx
+* [Android Annotations](https://) - xxx
+* [Retrofit](https://) - xxx
+* [Mockito] (https://) - xxx
+* [Espresso] (http://) - xxx
+* [Android Support API] (http://) - xxxx
+* [Bottom Bar] (http://) - xxx
+
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* **José Carlos Junior** - admin - *junior.jc@outlook.com*
