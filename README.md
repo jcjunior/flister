@@ -72,7 +72,4 @@ Considering the fact that phonegap provide us tools to run our app at any mobile
 
 ## Authors
 
-* **José Carlos Junior** - admin - *junior.jc@outlook.com*
-
-
-
+* **José Carlos Junior** - *junior.jc@outlook.com*
