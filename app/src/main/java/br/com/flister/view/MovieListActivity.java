@@ -30,7 +30,7 @@ public class MovieListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_nearby);
+        BottomBarTab nearby = bottomBar.getTabWithId(R.id.tab_recent);
         nearby.setBadgeCount(5);
         //nearby.removeBadge();
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_favorites"
+        id="@+id/tab_movies"
+        icon="@drawable/ic_movie_white_24dp"
+        title="Movies"
+        inActiveColor="#c7ced2"
+        activeColor="#FFFFFF"
+        barColorWhenSelected="#8a6b63"/>
+    <tab
+        id="@+id/tab_recent"
         icon="@drawable/ic_update_white_24dp"
-        title="Favorites"
-        barColorWhenSelected="#5D4037"/>
+        title="Recent"
+        inActiveColor="#c7ced2"
+        activeColor="#FFFFFF"
+        barColorWhenSelected="#0a8768"/>
     <tab
-        id="@+id/tab_nearby"
-        icon="@drawable/ic_location_on_white_24dp"
-        title="Nearby" />
-    <tab
-        id="@+id/tab_friends"
+        id="@+id/tab_favorites"
         icon="@drawable/ic_favorite_white_24dp"
-        title="Friends" />
+        title="Favorites"
+        inActiveColor="#c7ced2"
+        activeColor="#FFFFFF"
+        barColorWhenSelected="#465c64"/>
 </tabs>
