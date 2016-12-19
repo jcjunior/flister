@@ -2,13 +2,50 @@
 
 This is an Android App that has integration with The Movie Database API (https://www.themoviedb.org) and provide a list with several movies. 
 
-### What is this repository for? ###
+## Getting Started
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### How do I get set up? ###
+### Prerequisites
+
+1. Install Phonegap CLI
+
+```
+http://docs.phonegap.com/getting-started/1-install-phonegap/cli/
+```
+
+2. Download the "Phonegap Developer" App on your phone.
+
+### Installing
+
+Access your project folder
+
+```
+cd path_to_directory
+```
+
+Initialize the phonegap project locally.
+
+```
+phonegap prepare
+```
+
+Start a local server
+
+```
+phonegap serve
+```
+
+Access the app from browser or phonegap developer app
+
+```
+http://localhost:3000
+```
+
+
+## Deployment
+
+Considering the fact that phonegap provide us tools to run our app at any mobile device, it is possible to make some changes in the configuration an build the app with a specific platform. 
 
 * Summary of set up
 * Configuration
@@ -17,7 +54,7 @@ This is an Android App that has integration with The Movie Database API (https:/
 * How to run tests
 * Deployment instructions
 
-### Contribution guidelines ###
+## Contribution guidelines ##
 
 * Writing tests
 * Code review
@@ -33,6 +70,9 @@ This is an Android App that has integration with The Movie Database API (https:/
 * [Android Support API] (http://) - xxxx
 * [Bottom Bar] (http://) - xxx
 
-### Who do I talk to? ###
+## Authors
 
 * **José Carlos Junior** - admin - *junior.jc@outlook.com*
+
+
+
