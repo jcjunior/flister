@@ -25,9 +25,9 @@ This is an Android App that has integration with The Movie Database API (https:/
 
 ## Built With
 
-* [Android SDK](https://) - xxx
-* [Android Annotations](https://) - xxx
-* [Retrofit](https://) - xxx
+* [Android SDK] (https://) - xxx
+* [Android Annotations] (https://) - xxx
+* [Retrofit] (https://) - xxx
 * [Mockito] (https://) - xxx
 * [Espresso] (http://) - xxx
 * [Android Support API] (http://) - xxxx
