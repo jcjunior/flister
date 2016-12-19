@@ -1,0 +1,93 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'distribution'
+
+distributions {
+    main {
+        baseName = 'Flister'
+        contents {
+            from rootDir
+            exclude 'app/build'
+            exclude 'build'
+            exclude '.gradle'
+            exclude '.idea'
+            exclude 'gradle'
+        }
+    }
+}
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        applicationId "br.com.flister"
+        minSdkVersion 14
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def file = output.outputFile
+                    def appId = 'Flister'
+                    def fileName = appId + "-" + defaultConfig.versionName + ".apk"
+                    output.outputFile = new File(file.parent, fileName)
+                }
+            }
+        }
+    }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'MOVIE_DB_API_KEY', "\"27e5f4043b763d134e52461a9b2390e5\""
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+ext {
+    junitVersion = '4.12'
+    mockitoVersion = '1.9.5'
+    retrofitVersion = '2.1.0'
+    androidAnnotationsVersion = '4.2.0'
+    androidSupportVersion = '24.2.1'
+    bottomBarVersion = '2.0.2'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:$mockitoVersion"
+
+    apt "org.androidannotations:androidannotations:$androidAnnotationsVersion"
+    compile "org.androidannotations:androidannotations-api:$androidAnnotationsVersion"
+
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+
+    compile "com.android.support:appcompat-v7:$androidSupportVersion"
+    compile "com.android.support:design:$androidSupportVersion"
+
+    compile "com.roughike:bottom-bar:$bottomBarVersion"
+
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
+    }
+}
+
