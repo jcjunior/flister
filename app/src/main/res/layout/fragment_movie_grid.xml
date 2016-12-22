@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler_view"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:scrollbars="vertical" >
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
-</android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" >
+    </android.support.v7.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/poweredByTMD"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/powered_by_height"
+        android:layout_marginBottom="@dimen/powered_by_height_margin_bottom"
+        android:layout_marginTop="@dimen/powered_by_height_margin_top"
+        android:textAlignment="center"/>
+
+</LinearLayout>

@@ -12,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabSelectListener;
 
@@ -49,6 +51,9 @@ public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDel
     @Bean
     MovieAdapter movieAdapter;
 
+    @ViewById(R.id.poweredByTMD)
+    ImageView poweredByTMD;
+
     private GetUpcomingMoviesReceiver getUpcomingMoviesReceiver;
 
     @Override
@@ -58,6 +63,12 @@ public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDel
         getUpcomingMoviesReceiver = GetUpcomingMoviesReceiver.registerObserver(this);
 
         movieListRest.getUpcomingMovies();
+
+    }
+
+    @AfterViews
+    public void onCreateView(){
+        Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
     }
 
     @Override
