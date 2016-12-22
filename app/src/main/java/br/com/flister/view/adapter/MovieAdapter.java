@@ -42,17 +42,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
+
         MovieGridItemVO movie = movies.get(position);
         holder.title.setText(movie.getTitle());
         holder.subtitle.setText(movie.getSubtitle());
 
-        // loading album cover using Glide library
         Glide.with(context).load(movie.getPoster()).into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.overflow);
+                showPopupMenu(holder.overflow, movie);
             }
         });
     }
@@ -65,12 +65,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     /**
      * Showing popup menu when tapping on 3 dots
      */
-    private void showPopupMenu(View view) {
+    private void showPopupMenu(View view, MovieGridItemVO movie) {
         // inflate menu
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_movie, popup.getMenu());
-        popup.setOnMenuItemClickListener(new MovieAdapter.MyMenuItemClickListener());
+        popup.setOnMenuItemClickListener(new MovieAdapter.MyMenuItemClickListener(movie));
         popup.show();
     }
 
@@ -79,7 +79,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
      */
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        public MyMenuItemClickListener() {
+        private MovieGridItemVO movie;
+
+        public MyMenuItemClickListener(MovieGridItemVO movie) {
+            this.movie = movie;
         }
 
         @Override
@@ -89,7 +92,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                     Toast.makeText(context, "Add to favorite", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_overview:
-                    Toast.makeText(context, "Overview", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, movie.getOverview(), Toast.LENGTH_SHORT).show();
                     return true;
                 default:
             }
