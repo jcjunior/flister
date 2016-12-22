@@ -10,17 +10,23 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
+import org.androidannotations.annotations.sharedpreferences.Pref;
 
 import java.util.List;
+import java.util.Set;
 
 import br.com.flister.R;
+import br.com.flister.dao.DatabaseHelper;
 import br.com.flister.model.MovieGridItemVO;
+import br.com.flister.service.MovieServiceImpl;
+import br.com.flister.utils.Constants;
+import br.com.flister.utils.MoviesPreferences_;
 import br.com.flister.view.fragment.MovieOverviewFragment;
 import br.com.flister.view.fragment.MovieOverviewFragment_;
 
@@ -34,11 +40,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private List<MovieGridItemVO> movies;
+    private DatabaseHelper databaseHelper = null;
 
     @RootContext
     Context context;
 
+    @Pref
+    MoviesPreferences_ moviesPreference;
+
     private Fragment fragment;
+
+    @Bean
+    MovieServiceImpl movieServiceImpl;
 
 
     @Override
@@ -52,9 +65,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         final MovieGridItemVO movie = movies.get(position);
         holder.title.setText(movie.getTitle());
-        holder.subtitle.setText(movie.getSubtitle());
+        holder.releaseDate.setText(movie.getReleaseDate());
 
-        Glide.with(context).load(movie.getPoster()).into(holder.thumbnail);
+        Glide.with(context).load(Constants.BASE_GET_IMAGE_URL + movie.getPoster()).into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,21 +99,27 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
      */
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
 
-        private MovieGridItemVO movie;
+        private MovieGridItemVO movieGridItemVO;
 
         public MyMenuItemClickListener(MovieGridItemVO movie) {
-            this.movie = movie;
+            this.movieGridItemVO = movie;
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
             switch (menuItem.getItemId()) {
+
                 case R.id.action_add_favorite:
-                    Toast.makeText(context, "Add to favorite", Toast.LENGTH_SHORT).show();
+                    movieServiceImpl.insertOrUpdate(movieGridItemVO);
                     return true;
+
                 case R.id.action_overview:
-                    callMovieOverviewFragment(movie);
+                    Set<String> movieIDs = moviesPreference.movies_ids().get();
+                    movieIDs.add(movieGridItemVO.getIdMovie());
+                    moviesPreference.edit().movies_ids().put(movieIDs).apply();
+                    callMovieOverviewFragment(movieGridItemVO);
                     return true;
+
                 default:
             }
             return false;
@@ -129,4 +148,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     public void setFragment(Fragment fragment) {
         this.fragment = fragment;
     }
+
 }

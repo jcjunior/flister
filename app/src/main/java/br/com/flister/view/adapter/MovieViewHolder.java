@@ -13,13 +13,13 @@ import br.com.flister.R;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView title, subtitle;
+    public TextView title, releaseDate;
     public ImageView thumbnail, overflow;
 
     public MovieViewHolder(View view) {
         super(view);
         title = (TextView) view.findViewById(R.id.title);
-        subtitle = (TextView) view.findViewById(R.id.subtitle);
+        releaseDate = (TextView) view.findViewById(R.id.releaseDate);
         thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
         overflow = (ImageView) view.findViewById(R.id.overflow);
     }

@@ -5,7 +5,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Switch;
 
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -14,6 +13,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import br.com.flister.R;
+import br.com.flister.utils.DataOrigin;
 import br.com.flister.view.fragment.MoviesGridFragment;
 import br.com.flister.view.fragment.MoviesGridFragment_;
 
@@ -43,11 +43,13 @@ public class MainActivity extends AppCompatActivity  {
             public void onTabSelected(@IdRes int tabId) {
                 switch (tabId){
                     case R.id.tab_favorites:
+                        callMoviesGridFragment(DataOrigin.DATA_BASE);
                         break;
                     case R.id.tab_movies:
-                        callMoviesGridFragment();
+                        callMoviesGridFragment(DataOrigin.REST_API);
                         break;
                     case R.id.tab_recent:
+                        callMoviesGridFragment(DataOrigin.SHARED_PREFERENCES);
                         break;
                 }
             }
@@ -55,15 +57,17 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-    private void callMoviesGridFragment() {
-        MoviesGridFragment moviesGridFragment = MoviesGridFragment_.builder().build();
+    private void callMoviesGridFragment(DataOrigin dataOrigin) {
+        MoviesGridFragment moviesGridFragment = MoviesGridFragment_.builder()
+                .dataOrigin(dataOrigin)
+                .build();
 
         getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.myScrollingContent, moviesGridFragment)
                 .commit();
 
-        Log.d(TAG, "MainActivity called MoviesGridFragment with success");
+        Log.d(TAG, "MainActivity called MoviesGridFragment ["+dataOrigin+"] with success ");
     }
 
 

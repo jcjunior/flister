@@ -3,7 +3,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="card_margin">5dp</dimen>
     <dimen name="card_movie_radius">0dp</dimen>
-    <dimen name="movie_poster_height">160dp</dimen>
+    <dimen name="movie_poster_height">200dp</dimen>
     <dimen name="movie_title_padding">10dp</dimen>
     <dimen name="movie_title">15dp</dimen>
     <dimen name="movie_subtitle_padding_bottom">5dp</dimen>

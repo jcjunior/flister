@@ -8,10 +8,19 @@ import java.io.Serializable;
 
 public class MovieGridItemVO implements Serializable {
 
+    public String idMovie;
     public String title;
-    public String subtitle;
+    public String releaseDate;
     public String overview;
     public String poster;
+
+    public String getIdMovie() {
+        return idMovie;
+    }
+
+    public void setIdMovie(String idMovie) {
+        this.idMovie = idMovie;
+    }
 
     public String getTitle() {
         return title;
@@ -21,12 +30,12 @@ public class MovieGridItemVO implements Serializable {
         this.title = title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
     public String getOverview() {

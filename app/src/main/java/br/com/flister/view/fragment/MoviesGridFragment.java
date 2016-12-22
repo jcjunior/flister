@@ -2,35 +2,32 @@ package br.com.flister.view.fragment;
 
 import android.app.Application;
 import android.app.Fragment;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.roughike.bottombar.BottomBarTab;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.InstanceState;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.List;
 
 import br.com.flister.R;
+import br.com.flister.broadcast.GetFavoriteMoviesReceiver;
+import br.com.flister.broadcast.GetRecentMoviesReceiver;
 import br.com.flister.broadcast.GetUpcomingMoviesReceiver;
-import br.com.flister.delegate.GetUpcomingMoviesDelegate;
+import br.com.flister.delegate.GenericMoviesDelegate;
 import br.com.flister.model.MovieGridItemVO;
-import br.com.flister.network.MovieListRest;
+import br.com.flister.service.MovieServiceImpl;
+import br.com.flister.utils.Constants;
+import br.com.flister.utils.DataOrigin;
 import br.com.flister.view.adapter.MovieAdapter;
 
 /**
@@ -38,46 +35,71 @@ import br.com.flister.view.adapter.MovieAdapter;
  */
 
 @EFragment(R.layout.fragment_movie_grid)
-public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDelegate {
-
-    private static final String MOVIE_LIST = "movie_list";
+public class MoviesGridFragment extends Fragment implements GenericMoviesDelegate {
 
     @ViewById(R.id.recycler_view)
     RecyclerView recyclerView;
 
     @Bean
-    MovieListRest movieListRest;
+    MovieAdapter movieAdapter;
 
     @Bean
-    MovieAdapter movieAdapter;
+    MovieServiceImpl movieServiceImpl;
 
     @ViewById(R.id.poweredByTMD)
     ImageView poweredByTMD;
 
+    @FragmentArg(Constants.DATA_ORIGIN)
+    DataOrigin dataOrigin;
+
     private GetUpcomingMoviesReceiver getUpcomingMoviesReceiver;
+    private GetFavoriteMoviesReceiver getFavoriteMoviesReceiver;
+    private GetRecentMoviesReceiver getRecentMoviesReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getUpcomingMoviesReceiver = new GetUpcomingMoviesReceiver();
+        getUpcomingMoviesReceiver.registerObserver(this);
 
-        getUpcomingMoviesReceiver = GetUpcomingMoviesReceiver.registerObserver(this);
+        getFavoriteMoviesReceiver = new GetFavoriteMoviesReceiver();
+        getFavoriteMoviesReceiver.registerObserver(this);
 
-        movieListRest.getUpcomingMovies();
-
+        getRecentMoviesReceiver = new GetRecentMoviesReceiver();
+        getRecentMoviesReceiver.registerObserver(this);
     }
 
     @AfterViews
     public void onCreateView(){
         Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
         movieAdapter.setFragment(this);
+
+        switch (dataOrigin){
+
+            case DATA_BASE:
+                movieServiceImpl.getFavoriteMovies();
+                break;
+
+            case REST_API:
+                movieServiceImpl.getUpcomingMovies();
+                break;
+
+            case SHARED_PREFERENCES:
+                movieServiceImpl.getLastVisitedMovie();
+                break;
+
+            default:
+                Toast.makeText(getActivity(),"Something went wrong", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
     }
 
-    @Override
-    public void manageGetUpComingMoviesSuccess(List<MovieGridItemVO> moviesVO) {
+    private void initializeMovieGrid(List<MovieGridItemVO> moviesVO) {
 
-        if (moviesVO != null) {
-
+        if (recyclerView != null) {
             movieAdapter.setMovies(moviesVO);
+            movieAdapter.notifyDataSetChanged();
 
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
             recyclerView.setLayoutManager(mLayoutManager);
@@ -85,12 +107,18 @@ public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDel
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(movieAdapter);
         }
-
     }
 
     @Override
-    public void managerGetUpComingMoviesCallbackError(Exception e) {
-        Log.i("WEBSERVICE error", e.toString());
+    public void manageGetMoviesSuccess(List<MovieGridItemVO> movies) {
+        if (movies != null && movies.size() > 0){
+            initializeMovieGrid(movies);
+        }
+    }
+
+    @Override
+    public void managerGetMoviesError(Exception e) {
+        Toast.makeText(getActivity(), "An error occured "+ e, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -102,55 +130,8 @@ public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDel
     public void onDestroy() {
         super.onDestroy();
         getUpcomingMoviesReceiver.unregisterObserver(retrieveApplication());
+        getFavoriteMoviesReceiver.unregisterObserver(retrieveApplication());
+        getRecentMoviesReceiver.unregisterObserver(retrieveApplication());
     }
 
-
-
-
-
-    /**
-     * RecyclerView item decoration - give equal margin around grid item
-     */
-    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-
-        private int spanCount;
-        private int spacing;
-        private boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            int position = parent.getChildAdapterPosition(view); // item position
-            int column = position % spanCount; // item column
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
-                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
-
-                if (position < spanCount) { // top edge
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing; // item bottom
-            } else {
-                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
-                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
-                if (position >= spanCount) {
-                    outRect.top = spacing; // item top
-                }
-            }
-        }
-    }
-
-    /**
-     * Converting dp to pixel
-     */
-    private int dpToPx(int dp) {
-        Resources r = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
-    }
 }
