@@ -13,6 +13,7 @@ public class MovieGridItemVO implements Serializable {
     public String releaseDate;
     public String overview;
     public String poster;
+    public boolean favorite;
 
     public String getIdMovie() {
         return idMovie;
@@ -52,5 +53,13 @@ public class MovieGridItemVO implements Serializable {
 
     public void setPoster(String poster) {
         this.poster = poster;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

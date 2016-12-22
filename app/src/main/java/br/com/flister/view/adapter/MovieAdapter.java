@@ -26,9 +26,12 @@ import br.com.flister.dao.DatabaseHelper;
 import br.com.flister.model.MovieGridItemVO;
 import br.com.flister.service.MovieServiceImpl;
 import br.com.flister.utils.Constants;
+import br.com.flister.utils.DataOrigin;
 import br.com.flister.utils.MoviesPreferences_;
 import br.com.flister.view.fragment.MovieOverviewFragment;
 import br.com.flister.view.fragment.MovieOverviewFragment_;
+import br.com.flister.view.fragment.MoviesGridFragment;
+import br.com.flister.view.fragment.MoviesGridFragment_;
 
 /**
  * Created by junior on 21/12/2016.
@@ -40,7 +43,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private List<MovieGridItemVO> movies;
-    private DatabaseHelper databaseHelper = null;
 
     @RootContext
     Context context;
@@ -90,6 +92,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         PopupMenu popup = new PopupMenu(context, view);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.menu_movie, popup.getMenu());
+
+        MenuItem remove_favorite = popup.getMenu().findItem(R.id.action_remove_favorite);
+        MenuItem add_favorite = popup.getMenu().findItem(R.id.action_add_favorite);
+
+        if (movie.isFavorite()){
+            remove_favorite.setVisible(true);
+            add_favorite.setVisible(false);
+        } else {
+            remove_favorite.setVisible(false);
+            add_favorite.setVisible(true);
+        }
+
         popup.setOnMenuItemClickListener(new MovieAdapter.MyMenuItemClickListener(movie));
         popup.show();
     }
@@ -107,9 +121,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
+
             switch (menuItem.getItemId()) {
 
                 case R.id.action_add_favorite:
+                    movieGridItemVO.setFavorite(true);
                     movieServiceImpl.insertOrUpdate(movieGridItemVO);
                     return true;
 
@@ -118,6 +134,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                     movieIDs.add(movieGridItemVO.getIdMovie());
                     moviesPreference.edit().movies_ids().put(movieIDs).apply();
                     callMovieOverviewFragment(movieGridItemVO);
+                    return true;
+
+                case R.id.action_remove_favorite:
+                    movieServiceImpl.remove(movieGridItemVO);
+                    callFavoritesFragment();
                     return true;
 
                 default:
@@ -140,6 +161,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         fragment.getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.myScrollingContent, movieOverviewFragment)
+                .commit();
+
+        Log.d(TAG, "MovieAdapter called MovieOverviewFragment with success");
+    }
+
+    private void callFavoritesFragment() {
+
+        MoviesGridFragment moviesGridFragment = MoviesGridFragment_.builder()
+                .dataOrigin(DataOrigin.DATA_BASE)
+                .build();
+
+        fragment.getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.myScrollingContent, moviesGridFragment)
                 .commit();
 
         Log.d(TAG, "MovieAdapter called MovieOverviewFragment with success");

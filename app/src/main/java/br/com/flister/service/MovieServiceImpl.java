@@ -176,8 +176,31 @@ public class MovieServiceImpl {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            Toast.makeText(context, "An error occurred when tried to save in favorites", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, e.getMessage());
         }
+    }
+
+    public void remove(MovieGridItemVO movieGridItemVO){
+
+        try {
+
+            Movie movie = parseMovieGridItemVOToMovie(movieGridItemVO);
+            List<Movie> foundMovie = getHelper().getMovieDAO().queryForMatching(movie);
+
+            if (foundMovie != null && foundMovie.size() == 1){
+
+                int rows = getHelper().getMovieDAO().delete(foundMovie.get(0));
+                if (rows == 1) {
+                    Toast.makeText(context, "Movie removed from favorites with success", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+        } catch (SQLException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
     }
 
     private List<MovieGridItemVO> parseListMoviesToListMovieGridItemVO(List<Movie> movies) {
@@ -204,6 +227,7 @@ public class MovieServiceImpl {
             movieGridItemVO.setPoster(movie.getPosterPath());
             movieGridItemVO.setReleaseDate(movie.getReleaseDate());
             movieGridItemVO.setIdMovie(movie.getIdMovie());
+            movieGridItemVO.setFavorite(movie.isFavorite());
         }
 
         return movieGridItemVO;
@@ -220,6 +244,7 @@ public class MovieServiceImpl {
             movie.setPosterPath(movieGridItemVO.getPoster());
             movie.setReleaseDate(movieGridItemVO.getReleaseDate());
             movie.setIdMovie(movieGridItemVO.getIdMovie());
+            movie.setFavorite(movieGridItemVO.isFavorite());
         }
 
         return movie;

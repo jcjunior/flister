@@ -19,6 +19,7 @@ public class Movie implements Serializable {
     public static final String FIELD_TITLE = "title";
     public static final String FIELD_RELEASE_DATE = "releaseDate";
     public static final String FIELD_ID_MOVIE = "idMovie";
+    public static final String FIELD_FAVORITE = "isFavorite";
 
     @DatabaseField(columnName = FIELD_ID, generatedId = true)
     private int xid;
@@ -42,6 +43,9 @@ public class Movie implements Serializable {
     @SerializedName("release_date")
     @DatabaseField(columnName = FIELD_RELEASE_DATE)
     private String releaseDate;
+
+    @DatabaseField(columnName = FIELD_FAVORITE)
+    private boolean favorite;
 
     public Movie() {
     }
@@ -92,5 +96,13 @@ public class Movie implements Serializable {
 
     public void setIdMovie(String idMovie) {
         this.idMovie = idMovie;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
