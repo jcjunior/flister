@@ -69,6 +69,7 @@ public class MoviesGridFragment extends Fragment implements GetUpcomingMoviesDel
     @AfterViews
     public void onCreateView(){
         Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
+        movieAdapter.setFragment(this);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package br.com.flister.view.adapter;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +21,8 @@ import java.util.List;
 
 import br.com.flister.R;
 import br.com.flister.model.MovieGridItemVO;
+import br.com.flister.view.fragment.MovieOverviewFragment;
+import br.com.flister.view.fragment.MovieOverviewFragment_;
 
 /**
  * Created by junior on 21/12/2016.
@@ -34,6 +38,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @RootContext
     Context context;
 
+    private Fragment fragment;
+
+
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_card, parent, false);
@@ -43,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Override
     public void onBindViewHolder(final MovieViewHolder holder, int position) {
 
-        MovieGridItemVO movie = movies.get(position);
+        final MovieGridItemVO movie = movies.get(position);
         holder.title.setText(movie.getTitle());
         holder.subtitle.setText(movie.getSubtitle());
 
@@ -92,7 +99,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                     Toast.makeText(context, "Add to favorite", Toast.LENGTH_SHORT).show();
                     return true;
                 case R.id.action_overview:
-                    Toast.makeText(context, movie.getOverview(), Toast.LENGTH_SHORT).show();
+                    callMovieOverviewFragment(movie);
                     return true;
                 default:
             }
@@ -103,5 +110,23 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
 
     public void setMovies(List<MovieGridItemVO> movies) {
         this.movies = movies;
+    }
+
+    private void callMovieOverviewFragment(MovieGridItemVO movie) {
+
+        MovieOverviewFragment movieOverviewFragment = MovieOverviewFragment_.builder()
+                .movieSelected(movie)
+                .build();
+
+        fragment.getFragmentManager()
+                .beginTransaction()
+                .replace(R.id.myScrollingContent, movieOverviewFragment)
+                .commit();
+
+        Log.d(TAG, "MovieAdapter called MovieOverviewFragment with success");
+    }
+
+    public void setFragment(Fragment fragment) {
+        this.fragment = fragment;
     }
 }
