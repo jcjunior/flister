@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +41,9 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
 
     @ViewById(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    @ViewById(R.id.progressBarGrid)
+    ProgressBar progressBar;
 
     @Bean
     MovieAdapter movieAdapter;
@@ -98,6 +103,10 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
     private void initializeMovieGrid(List<MovieGridItemVO> moviesVO) {
 
         if (recyclerView != null) {
+
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
             movieAdapter.setMovies(moviesVO);
             movieAdapter.notifyDataSetChanged();
 
