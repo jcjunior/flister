@@ -3,12 +3,15 @@ package br.com.flister.view.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -47,6 +50,9 @@ public class SignupActivity extends AppCompatActivity {
     @ViewById(R.id.link_login)
     TextView loginLink;
 
+    @ViewById(R.id.snackbarPosition)
+    CoordinatorLayout snackBarPositionLayout;
+
     @AfterViews
     public void init(){
         mAuth = FirebaseAuth.getInstance();
@@ -83,6 +89,7 @@ public class SignupActivity extends AppCompatActivity {
             return;
         }
 
+        UtilView.hideSoftkeyboard(this);
         UtilView.showIndeterminateProgressDialog("Creating account...", this);
 
         String email = txtEmail.getText().toString();
@@ -100,11 +107,17 @@ public class SignupActivity extends AppCompatActivity {
                         UtilView.cancelIndeterminateProgressDialog();
 
                         if (task.isSuccessful()){
-                            Toast.makeText(SignupActivity.this, "Account created successfully", Toast.LENGTH_LONG).show();
+                            Snackbar.make(snackBarPositionLayout, "Account created successfully", Snackbar.LENGTH_LONG)
+                                    .setAction("Close", clickListener)
+                                    .show();
+
                             Intent intent = LoginActivity_.intent(SignupActivity.this).get();
                             startActivity(intent);
                         } else {
-                            Toast.makeText(SignupActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                            Snackbar.make(snackBarPositionLayout, task.getException().getMessage(), Snackbar.LENGTH_LONG)
+                                    .setAction("Close", clickListener)
+                                    .show();
                         }
 
 
@@ -149,5 +162,10 @@ public class SignupActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+    final View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+        }
+    };
 
 }

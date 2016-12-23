@@ -1,6 +1,5 @@
 package br.com.flister.view.adapter;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -18,16 +17,17 @@ import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 import org.androidannotations.annotations.sharedpreferences.Pref;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
 import br.com.flister.R;
-import br.com.flister.dao.DatabaseHelper;
 import br.com.flister.model.MovieGridItemVO;
 import br.com.flister.service.MovieServiceImpl;
 import br.com.flister.utils.Constants;
 import br.com.flister.utils.DataOrigin;
 import br.com.flister.utils.MoviesPreferences_;
+import br.com.flister.view.activity.MainActivity;
 import br.com.flister.view.fragment.MovieOverviewFragment;
 import br.com.flister.view.fragment.MovieOverviewFragment_;
 import br.com.flister.view.fragment.MoviesGridFragment;
@@ -50,7 +50,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Pref
     MoviesPreferences_ moviesPreference;
 
-    private Fragment fragment;
+    private MainActivity mainActivity;
 
     @Bean
     MovieServiceImpl movieServiceImpl;
@@ -122,30 +122,45 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
 
-            switch (menuItem.getItemId()) {
+            try {
+                switch (menuItem.getItemId()) {
 
-                case R.id.action_add_favorite:
-                    movieGridItemVO.setFavorite(true);
-                    movieServiceImpl.insertOrUpdate(movieGridItemVO);
-                    return true;
+                    case R.id.action_add_favorite:
+                        movieGridItemVO.setFavorite(true);
+                        movieServiceImpl.insertOrUpdate(movieGridItemVO);
+                        mainActivity.getSnackBar("Movie saved on favorites with success").setAction("Close", clickListener).show();;
+                        return true;
 
-                case R.id.action_overview:
-                    Set<String> movieIDs = moviesPreference.movies_ids().get();
-                    movieIDs.add(movieGridItemVO.getIdMovie());
-                    moviesPreference.edit().movies_ids().put(movieIDs).apply();
-                    callMovieOverviewFragment(movieGridItemVO);
-                    return true;
+                    case R.id.action_overview:
+                        Set<String> movieIDs = moviesPreference.movies_ids().get();
+                        movieIDs.add(movieGridItemVO.getIdMovie());
+                        moviesPreference.edit().movies_ids().put(movieIDs).apply();
+                        callMovieOverviewFragment(movieGridItemVO);
+                        return true;
 
-                case R.id.action_remove_favorite:
-                    movieServiceImpl.remove(movieGridItemVO);
-                    callFavoritesFragment();
-                    return true;
+                    case R.id.action_remove_favorite:
+                        int rows = movieServiceImpl.remove(movieGridItemVO);
+                        if (rows == 1){
+                            mainActivity.getSnackBar("Movie removed from favorites with success").setAction("Close", clickListener).show();;
+                        }
+                        callFavoritesFragment();
+                        return true;
 
-                default:
+                    default:
+                }
+
+            } catch (SQLException e) {
+                mainActivity.getSnackBar("An error occurred in database. ["+e.getMessage()+"]").setAction("Close", clickListener).show();;
+                Log.e(TAG, e.getMessage());
             }
+
             return false;
         }
 
+        final View.OnClickListener clickListener = new View.OnClickListener() {
+            public void onClick(View v) {
+            }
+        };
     }
 
     public void setMovies(List<MovieGridItemVO> movies) {
@@ -158,7 +173,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                 .movieSelected(movie)
                 .build();
 
-        fragment.getFragmentManager()
+        mainActivity.getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.myScrollingContent, movieOverviewFragment)
                 .commit();
@@ -172,7 +187,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
                 .dataOrigin(DataOrigin.DATA_BASE)
                 .build();
 
-        fragment.getFragmentManager()
+        mainActivity.getFragmentManager()
                 .beginTransaction()
                 .replace(R.id.myScrollingContent, moviesGridFragment)
                 .commit();
@@ -180,8 +195,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         Log.d(TAG, "MovieAdapter called MovieOverviewFragment with success");
     }
 
-    public void setFragment(Fragment fragment) {
-        this.fragment = fragment;
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
-
 }

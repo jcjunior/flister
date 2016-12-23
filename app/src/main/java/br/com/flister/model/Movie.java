@@ -1,6 +1,7 @@
 package br.com.flister.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
@@ -25,23 +26,23 @@ public class Movie implements Serializable {
     private int xid;
 
     @SerializedName("id")
-    @DatabaseField(columnName = FIELD_ID_MOVIE)
+    @DatabaseField(columnName = FIELD_ID_MOVIE, dataType = DataType.STRING)
     private String idMovie;
 
     @SerializedName("poster_path")
-    @DatabaseField(columnName = FIELD_POSTER_PATH)
+    @DatabaseField(columnName = FIELD_POSTER_PATH, dataType = DataType.STRING)
     private String posterPath;
 
     @SerializedName("overview")
-    @DatabaseField(columnName = FIELD_OVERVIEW)
+    @DatabaseField(columnName = FIELD_OVERVIEW, dataType = DataType.STRING)
     private String overview;
 
     @SerializedName("title")
-    @DatabaseField(columnName = FIELD_TITLE)
+    @DatabaseField(columnName = FIELD_TITLE, dataType = DataType.STRING)
     private String title;
 
     @SerializedName("release_date")
-    @DatabaseField(columnName = FIELD_RELEASE_DATE)
+    @DatabaseField(columnName = FIELD_RELEASE_DATE, dataType = DataType.STRING)
     private String releaseDate;
 
     @DatabaseField(columnName = FIELD_FAVORITE)
@@ -104,5 +105,18 @@ public class Movie implements Serializable {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "xid=" + xid +
+                ", idMovie='" + idMovie + '\'' +
+                ", posterPath='" + posterPath + '\'' +
+                ", overview='" + overview + '\'' +
+                ", title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", favorite=" + favorite +
+                '}';
     }
 }

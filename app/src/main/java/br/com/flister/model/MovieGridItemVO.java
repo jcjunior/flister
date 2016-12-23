@@ -63,4 +63,15 @@ public class MovieGridItemVO implements Serializable {
         this.favorite = favorite;
     }
 
+    @Override
+    public String toString() {
+        return "MovieGridItemVO{" +
+                "idMovie='" + idMovie + '\'' +
+                ", title='" + title + '\'' +
+                ", releaseDate='" + releaseDate + '\'' +
+                ", overview='" + overview + '\'' +
+                ", poster='" + poster + '\'' +
+                ", favorite=" + favorite +
+                '}';
+    }
 }

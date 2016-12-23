@@ -8,8 +8,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-1. Android SDK
-2. Android Studio 2.2.3
+1. Android SDK (Version 24 for compile)
+2. Android Studio 2.2.3 (With Build Tools 24)
 
 ```
 https://developer.android.com/studio/index.html

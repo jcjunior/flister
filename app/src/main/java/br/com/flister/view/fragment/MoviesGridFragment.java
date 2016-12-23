@@ -4,18 +4,21 @@ import android.app.Application;
 import android.app.Fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.InstanceState;
@@ -33,6 +36,7 @@ import br.com.flister.model.MovieGridItemVO;
 import br.com.flister.service.MovieServiceImpl;
 import br.com.flister.utils.Constants;
 import br.com.flister.utils.DataOrigin;
+import br.com.flister.view.activity.MainActivity;
 import br.com.flister.view.adapter.MovieAdapter;
 
 /**
@@ -47,6 +51,9 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
 
     @ViewById(R.id.progressBarGrid)
     ProgressBar progressBar;
+
+    @ViewById(R.id.lblEmptyContent)
+    TextView lblEmptyContent;
 
     @Bean
     MovieAdapter movieAdapter;
@@ -92,20 +99,25 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
                 break;
 
             default:
-                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                ((MainActivity) getActivity()).getSnackBar("Something went wrong").setAction("Close", clickListener).show();
                 break;
         }
+
     }
+
+    final View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+        }
+    };
 
     private void initializeMovieGrid(List<MovieGridItemVO> movies) {
 
         if (recyclerView != null) {
 
-            progressBar.setVisibility(View.GONE);
             int number_of_columns;
 
             recyclerView.setVisibility(View.VISIBLE);
-            movieAdapter.setFragment(this);
+            movieAdapter.setMainActivity((MainActivity) getActivity());
             movieAdapter.setMovies(movies);
             movieAdapter.notifyDataSetChanged();
 
@@ -137,14 +149,21 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
 
     @Override
     public void manageGetMoviesSuccess(List<MovieGridItemVO> movies) {
+
+        if (progressBar != null) progressBar.setVisibility(View.GONE);
+
         if (movies != null && movies.size() > 0){
+            if (lblEmptyContent != null) lblEmptyContent.setVisibility(View.GONE);
             initializeMovieGrid(movies);
+        } else {
+            if (lblEmptyContent != null) lblEmptyContent.setVisibility(View.VISIBLE);
         }
+
     }
 
     @Override
     public void managerGetMoviesError(Exception e) {
-        Toast.makeText(getActivity(), "An error occured "+ e, Toast.LENGTH_SHORT).show();
+        ((MainActivity) getActivity()).getSnackBar("An error occured "+ e).setAction("Close", clickListener).show();
     }
 
     @Override

@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -58,6 +60,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @ViewById(R.id.snackbarPosition)
+    CoordinatorLayout snackBarPositionLayout;
+
+
     @AfterViews
     public void init(){
         mAuth = FirebaseAuth.getInstance();
@@ -84,6 +90,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        UtilView.hideSoftkeyboard(this);
         UtilView.showIndeterminateProgressDialog("Authenticating...", this);
 
         String email = txtEmail.getText().toString();
@@ -106,14 +113,20 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(intent);
                         } else {
                             Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
-
+                            Snackbar.make(snackBarPositionLayout, task.getException().getMessage(), Snackbar.LENGTH_LONG)
+                                    .setAction("Close", clickListener)
+                                    .show();
                         }
 
                     }
                 });
 
     }
+
+    final View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+        }
+    };
 
     @Override
     protected void onStart() {

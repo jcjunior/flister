@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity  {
     @ViewById(R.id.my_toolbar)
     Toolbar myToolbar;
 
+    @ViewById(R.id.snackbarPosition)
+    CoordinatorLayout snackBarPositionLayout;
+
     @AfterViews
     public void init() {
 
@@ -58,18 +64,23 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onTabSelected(@IdRes int tabId) {
                 switch (tabId) {
-                    case R.id.tab_favorites:
-                        callMoviesGridFragment(DataOrigin.DATA_BASE);
-                        break;
                     case R.id.tab_movies:
                         callMoviesGridFragment(DataOrigin.REST_API);
                         break;
                     case R.id.tab_recent:
                         callMoviesGridFragment(DataOrigin.SHARED_PREFERENCES);
                         break;
+                    case R.id.tab_favorites:
+                        callMoviesGridFragment(DataOrigin.DATA_BASE);
+                        break;
                 }
             }
         });
+
+    }
+
+    public Snackbar getSnackBar (String mensagem){
+        return Snackbar.make(snackBarPositionLayout, mensagem, Snackbar.LENGTH_LONG);
     }
 
     private void callMoviesGridFragment(DataOrigin dataOrigin) {

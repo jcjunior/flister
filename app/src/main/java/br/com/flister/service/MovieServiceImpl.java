@@ -50,13 +50,13 @@ public class MovieServiceImpl {
     private TheMovieDatabaseAPI theMovieDatabaseAPI;
     private DatabaseHelper databaseHelper = null;
 
-    private GetRecentMoviesReceiver movieReceiver;
+    private GetRecentMoviesReceiver recentMoviesReceiver;
     private GetUpcomingMoviesReceiver upcomingMoviesReceiver;
     private GetFavoriteMoviesReceiver favoriteMoviesReceiver;
 
     public MovieServiceImpl() {
         theMovieDatabaseAPI = RestAPIClient.getClient().create(TheMovieDatabaseAPI.class);
-        movieReceiver = new GetRecentMoviesReceiver();
+        recentMoviesReceiver = new GetRecentMoviesReceiver();
         upcomingMoviesReceiver = new GetUpcomingMoviesReceiver();
         favoriteMoviesReceiver = new GetFavoriteMoviesReceiver();
     }
@@ -79,7 +79,7 @@ public class MovieServiceImpl {
                     upcomingMoviesReceiver.notifyNewParametersReceived(context, movies);
 
                     Log.i(TAG, call.request().toString());
-                    Log.i(TAG, "On response upcomingMoviesReceiver ["+response.body().toString()+"]");
+                    Log.i(TAG, "On response upcomingMoviesReceiver ["+response.body().movies.size()+" movies]");
                 }
 
             }
@@ -100,7 +100,7 @@ public class MovieServiceImpl {
         Set<String> movies_ids = moviesPreference.movies_ids().get();
         final List<MovieGridItemVO> movieGridItemVOList = new ArrayList<>();
 
-        if (movies_ids.size() > 0){
+        if (movies_ids.size() > 1){
 
             Iterator itr = movies_ids.iterator();
 
@@ -122,10 +122,10 @@ public class MovieServiceImpl {
 
                                 MovieGridItemVO movie = parseMovieToMovieGridItemVO(response.body());
                                 movieGridItemVOList.add(movie);
-                                movieReceiver.notifyNewParametersReceived(context, movieGridItemVOList);
+                                recentMoviesReceiver.notifyNewParametersReceived(context, movieGridItemVOList);
 
                                 Log.i(TAG, call.request().toString());
-                                Log.i(TAG, "On response movieReceiver ["+response.body().toString()+"]");
+                                Log.i(TAG, "On response recentMoviesReceiver ["+response.body().toString()+"]");
                             }
 
                         }
@@ -133,15 +133,17 @@ public class MovieServiceImpl {
                         @Override
                         public void onFailure(Call<Movie> call, Throwable t) {
 
-                            movieReceiver.notifyErrorReceived(context, (Exception) t);
+                            recentMoviesReceiver.notifyErrorReceived(context, (Exception) t);
 
                             Log.i(TAG, call.request().toString());
-                            Log.i(TAG, "On Failure movieReceiver", t);
+                            Log.i(TAG, "On Failure recentMoviesReceiver", t);
                         }
                     });
                 }
             }
 
+        } else {
+            recentMoviesReceiver.notifyNewParametersReceived(context, movieGridItemVOList);
         }
 
     }
@@ -153,6 +155,7 @@ public class MovieServiceImpl {
             List<Movie> movies = getHelper().getMovieDAO().queryForAll();
             List<MovieGridItemVO> movieGridItemVOList = parseListMoviesToListMovieGridItemVO(movies);
             favoriteMoviesReceiver.notifyNewParametersReceived(context, movieGridItemVOList);
+            Log.i(TAG, "On response getFavoriteMoviesReceiver ["+movieGridItemVOList.size()+" - movies]");
 
         } catch (SQLException e) {
             favoriteMoviesReceiver.notifyErrorReceived(context, e);
@@ -160,46 +163,32 @@ public class MovieServiceImpl {
 
     }
 
-    public void insertOrUpdate(MovieGridItemVO movieGridItemVO){
+    public void insertOrUpdate(MovieGridItemVO movieGridItemVO) throws SQLException {
 
-        try {
+        Movie movie = parseMovieGridItemVOToMovie(movieGridItemVO);
+        List<Movie> foundMovie = getHelper().getMovieDAO().queryForMatching(movie);
 
-            Movie movie = parseMovieGridItemVOToMovie(movieGridItemVO);
-            List<Movie> foundMovie = getHelper().getMovieDAO().queryForMatching(movie);
-
-            if (foundMovie == null || foundMovie.size() == 0){
-                getHelper().getMovieDAO().create(movie);
-                Toast.makeText(context, "Movie saved on favorites with success", Toast.LENGTH_SHORT).show();
-            } else {
-                getHelper().getMovieDAO().update(movie);
-                Toast.makeText(context, "Movie already saved.", Toast.LENGTH_SHORT).show();
-            }
-
-        } catch (SQLException e) {
-            Toast.makeText(context, "An error occurred when tried to save in favorites", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, e.getMessage());
+        if (foundMovie == null || foundMovie.size() == 0){
+            getHelper().getMovieDAO().create(movie);
+        } else {
+            getHelper().getMovieDAO().update(movie);
         }
+
     }
 
-    public void remove(MovieGridItemVO movieGridItemVO){
+    public int remove(MovieGridItemVO movieGridItemVO) throws SQLException {
 
-        try {
+        Movie movie = parseMovieGridItemVOToMovie(movieGridItemVO);
+        List<Movie> foundMovie = getHelper().getMovieDAO().queryForMatching(movie);
 
-            Movie movie = parseMovieGridItemVOToMovie(movieGridItemVO);
-            List<Movie> foundMovie = getHelper().getMovieDAO().queryForMatching(movie);
+        if (foundMovie != null && foundMovie.size() == 1){
 
-            if (foundMovie != null && foundMovie.size() == 1){
+            int rows = getHelper().getMovieDAO().delete(foundMovie.get(0));
 
-                int rows = getHelper().getMovieDAO().delete(foundMovie.get(0));
-                if (rows == 1) {
-                    Toast.makeText(context, "Movie removed from favorites with success", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-        } catch (SQLException e) {
-            Log.e(TAG, e.getMessage());
+            return rows;
         }
+
+        return 0;
 
     }
 
@@ -211,7 +200,6 @@ public class MovieServiceImpl {
 
             movieGridItemVOList.add(parseMovieToMovieGridItemVO(movie));
         }
-
 
         return movieGridItemVOList;
     }
