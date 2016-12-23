@@ -8,13 +8,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-1. Install Phonegap CLI
+1. Android SDK
+2. Android Studio 2.2.3
 
 ```
-http://docs.phonegap.com/getting-started/1-install-phonegap/cli/
+https://developer.android.com/studio/index.html
 ```
-
-2. Download the "Phonegap Developer" App on your phone.
 
 ### Installing
 
@@ -24,51 +23,47 @@ Access your project folder
 cd path_to_directory
 ```
 
-Initialize the phonegap project locally.
+Execute Gradle Wrapper in order to download all dependencies and build the project
 
 ```
-phonegap prepare
+gradlew build
 ```
 
-Start a local server
+Deploy the .apk into the device
 
 ```
-phonegap serve
+gradlew installDebug
 ```
 
-Access the app from browser or phonegap developer app
+Search for the app into your device app list and run it manually (Gradle don't start it automatically)
 
-```
-http://localhost:3000
-```
-
-
-## Deployment
-
-Considering the fact that phonegap provide us tools to run our app at any mobile device, it is possible to make some changes in the configuration an build the app with a specific platform. 
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-## Contribution guidelines ##
-
-* Writing tests
-* Code review
-* Other guidelines
 
 ## Built With
 
-* [Android SDK] (https://) - xxx
-* [Android Annotations] (https://) - xxx
-* [Retrofit] (https://) - xxx
-* [Mockito] (https://) - xxx
-* [Espresso] (http://) - xxx
-* [Android Support API] (http://) - xxxx
-* [Bottom Bar] (http://) - xxx
+* **[Android SDK]** - Android Software Development Kit
+https://developer.android.com/studio/index.html
+
+* **[Android Annotations]** - Framework to speed up Android development
+https://github.com/androidannotations/androidannotations/wiki
+
+* **[Firebase Auth]** - Backend services for authentication provided by Google.
+https://firebase.google.com/docs/auth/
+
+* **[Retrofit 2]** - Type-safe HTTP client for Android
+http://square.github.io/retrofit/
+
+* **[Android Support API]** - Offers backward-compatible for features that are not built into the framework.
+https://developer.android.com/topic/libraries/support-library/index.html)
+
+* **[Bottom Bar]** - A third-party framework that mimics the new Material Design Bottom Bar Navigation Pattern
+https://github.com/roughike/BottomBar
+
+* **[ORMLite]** - A lightweigth ORM for java
+http://ormlite.com/
+
+* **[Glide]** - An image loading and caching library for Android focused on smooth scrolling
+https://github.com/bumptech/glide
+
 
 ## Authors
 
