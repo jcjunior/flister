@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "292699206454",
+    "firebase_url": "https://flister-b8835.firebaseio.com",
+    "project_id": "flister-b8835",
+    "storage_bucket": "flister-b8835.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292699206454:android:29cd5f0c1b1329ca",
+        "android_client_info": {
+          "package_name": "br.com.flister"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292699206454-2kvq4sbgbabpolejtk2b3ltothdfahk0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+        "current_key": "AIzaSyBZqaI6ZnZeRGwy9KlIrR-ZHPUvqfX3cl4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

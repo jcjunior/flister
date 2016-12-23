@@ -70,5 +70,11 @@ public class MainActivity extends AppCompatActivity  {
         Log.d(TAG, "MainActivity called MoviesGridFragment ["+dataOrigin+"] with success ");
     }
 
+    @Override
+    public void onBackPressed() {
+        // disable going back to the LoginActivity
+        moveTaskToBack(true);
+    }
+
 
 }
