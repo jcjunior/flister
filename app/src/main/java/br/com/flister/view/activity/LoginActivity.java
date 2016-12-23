@@ -24,6 +24,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import br.com.flister.R;
+import br.com.flister.utils.UtilView;
 
 /**
  * Created by junior on 22/12/2016.
@@ -83,6 +84,8 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        UtilView.showIndeterminateProgressDialog("Authenticating...", this);
+
         String email = txtEmail.getText().toString();
         String password = txtPassword.getText().toString();
 
@@ -95,6 +98,8 @@ public class LoginActivity extends AppCompatActivity {
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
+
+                        UtilView.cancelIndeterminateProgressDialog();
 
                         if (task.isSuccessful()) {
                             Intent intent = MainActivity_.intent(LoginActivity.this).get();

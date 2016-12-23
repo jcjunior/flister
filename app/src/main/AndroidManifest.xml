@@ -10,8 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".view.activity.MainActivity_"
-            android:theme="@style/AppTheme.TransNav">
+        <activity android:name=".view.activity.MainActivity_" android:theme="@style/Theme.Design.Light.NoActionBar">
 
         </activity>
 
@@ -25,6 +24,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
 
         </activity>
 
