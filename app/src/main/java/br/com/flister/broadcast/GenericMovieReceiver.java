@@ -102,7 +102,6 @@ public abstract class GenericMovieReceiver extends BroadcastReceiver {
             intent.putExtra(EXCEPTION_NAME, e);
 
             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-
         } catch(Throwable ex) {
             Log.e(TAG, "Error on notify an error to observer [" + OBSERVER_NAME + "]", ex);
         }

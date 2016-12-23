@@ -3,6 +3,7 @@ package br.com.flister.view.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -18,7 +19,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.OptionsItem;
 import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
@@ -31,7 +34,7 @@ import br.com.flister.view.fragment.MoviesGridFragment_;
 /**
  * Created by jcjunior on 19/12/2016.
  */
-@EActivity
+@EActivity(R.layout.activity_main)
 @OptionsMenu(R.menu.toolbar_movie)
 public class MainActivity extends AppCompatActivity  {
 
@@ -43,11 +46,8 @@ public class MainActivity extends AppCompatActivity  {
     @ViewById(R.id.my_toolbar)
     Toolbar myToolbar;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    @AfterViews
+    public void init() {
 
         setSupportActionBar(myToolbar);
 
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity  {
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                switch (tabId){
+                switch (tabId) {
                     case R.id.tab_favorites:
                         callMoviesGridFragment(DataOrigin.DATA_BASE);
                         break;
@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         });
-
     }
 
     private void callMoviesGridFragment(DataOrigin dataOrigin) {

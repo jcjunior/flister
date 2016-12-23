@@ -69,7 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         holder.title.setText(movie.getTitle());
         holder.releaseDate.setText(movie.getReleaseDate());
 
-        Glide.with(context).load(Constants.BASE_GET_IMAGE_URL + movie.getPoster()).into(holder.thumbnail);
+        Glide.with(context).load(Constants.BASE_GET_IMAGE_URL + movie.getPoster()).placeholder(R.drawable.placeholder).crossFade().into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override

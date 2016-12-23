@@ -2,6 +2,7 @@ package br.com.flister.view.fragment;
 
 import android.app.Application;
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,8 +18,10 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
+import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.com.flister.R;
@@ -61,58 +64,72 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
     private GetFavoriteMoviesReceiver getFavoriteMoviesReceiver;
     private GetRecentMoviesReceiver getRecentMoviesReceiver;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getUpcomingMoviesReceiver = new GetUpcomingMoviesReceiver();
-        getUpcomingMoviesReceiver.registerObserver(this);
-
-        getFavoriteMoviesReceiver = new GetFavoriteMoviesReceiver();
-        getFavoriteMoviesReceiver.registerObserver(this);
-
-        getRecentMoviesReceiver = new GetRecentMoviesReceiver();
-        getRecentMoviesReceiver.registerObserver(this);
-    }
-
     @AfterViews
     public void onCreateView(){
-        Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
-        movieAdapter.setFragment(this);
 
-        switch (dataOrigin){
+        getFavoriteMoviesReceiver = new GetFavoriteMoviesReceiver();
+        getUpcomingMoviesReceiver = new GetUpcomingMoviesReceiver();
+        getRecentMoviesReceiver = new GetRecentMoviesReceiver();
+
+        Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
+
+        switch (dataOrigin) {
 
             case DATA_BASE:
+                getFavoriteMoviesReceiver.registerObserver(this);
                 movieServiceImpl.getFavoriteMovies();
                 break;
 
             case REST_API:
+                getUpcomingMoviesReceiver.unregisterObserver(retrieveApplication());
+                getUpcomingMoviesReceiver.registerObserver(this);
                 movieServiceImpl.getUpcomingMovies();
                 break;
 
             case SHARED_PREFERENCES:
+                getRecentMoviesReceiver.registerObserver(this);
                 movieServiceImpl.getLastVisitedMovie();
                 break;
 
             default:
-                Toast.makeText(getActivity(),"Something went wrong", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
                 break;
         }
-
     }
 
-    private void initializeMovieGrid(List<MovieGridItemVO> moviesVO) {
+    private void initializeMovieGrid(List<MovieGridItemVO> movies) {
 
         if (recyclerView != null) {
 
             progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            int number_of_columns;
 
-            movieAdapter.setMovies(moviesVO);
+            recyclerView.setVisibility(View.VISIBLE);
+            movieAdapter.setFragment(this);
+            movieAdapter.setMovies(movies);
             movieAdapter.notifyDataSetChanged();
 
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+            boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+            int orientation = getResources().getConfiguration().orientation;
+
+            if (tabletSize) {
+
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    number_of_columns = 4;
+                } else {
+                    number_of_columns = 3;
+                }
+            } else {
+
+                if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    number_of_columns = 3;
+                } else {
+                    number_of_columns = 2;
+                }
+            }
+
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), number_of_columns);
             recyclerView.setLayoutManager(mLayoutManager);
-            //recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(movieAdapter);
         }
