@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
@@ -69,7 +69,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         holder.title.setText(movie.getTitle());
         holder.releaseDate.setText(movie.getReleaseDate());
 
-        Glide.with(context).load(Constants.BASE_GET_IMAGE_URL + movie.getPoster()).placeholder(R.drawable.placeholder).crossFade().into(holder.thumbnail);
+        Picasso.with(context)
+                .load(Constants.BASE_GET_IMAGE_URL + movie.getPoster())
+                .placeholder(R.drawable.placeholder)
+                .into(holder.thumbnail);
+
+        //Glide.with(context).load(Constants.BASE_GET_IMAGE_URL + movie.getPoster()).placeholder(R.drawable.placeholder).crossFade().into(holder.thumbnail);
 
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override

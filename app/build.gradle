@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'distribution'
-apply plugin: 'com.google.gms.google-services'
+
 
 distributions {
     main {
@@ -65,10 +65,10 @@ ext {
     androidAnnotationsVersion = '4.2.0'
     androidSupportVersion = '24.2.1'
     bottomBarVersion = '2.0.2'
-    glideVersion = '3.7.0'
+    picassoVersion = '2.5.2'
     ormLiteVersion = '4.48'
     espressoCoreVersion = '2.2.2'
-    firebaseAuthVersion = '9.6.1'
+    firebaseVersion = '10.0.1'
 }
 
 dependencies {
@@ -92,9 +92,10 @@ dependencies {
     compile "com.roughike:bottom-bar:$bottomBarVersion"
     compile "com.android.support:cardview-v7:$androidSupportVersion"
     compile "com.android.support:recyclerview-v7:$androidSupportVersion"
-    compile "com.github.bumptech.glide:glide:$glideVersion"
+    compile "com.squareup.picasso:picasso:$picassoVersion"
     compile "com.j256.ormlite:ormlite-android:$ormLiteVersion"
-    compile "com.google.firebase:firebase-auth:$firebaseAuthVersion"
+    compile "com.google.firebase:firebase-auth:$firebaseVersion"
+    compile "com.google.firebase:firebase-core:$firebaseVersion"
 
 }
 
@@ -103,4 +104,6 @@ apt {
         androidManifestFile variant.outputs[0]?.processResources?.manifestFile
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
 
