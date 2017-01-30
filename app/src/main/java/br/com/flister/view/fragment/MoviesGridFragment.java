@@ -3,9 +3,6 @@ package br.com.flister.view.fragment;
 import android.app.Application;
 import android.app.Fragment;
 import android.content.res.Configuration;
-import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,17 +11,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
-import org.androidannotations.annotations.InstanceState;
 import org.androidannotations.annotations.ViewById;
 
-import java.io.Serializable;
 import java.util.List;
 
 import br.com.flister.R;
@@ -78,7 +72,10 @@ public class MoviesGridFragment extends Fragment implements GenericMoviesDelegat
         getUpcomingMoviesReceiver = new GetUpcomingMoviesReceiver();
         getRecentMoviesReceiver = new GetRecentMoviesReceiver();
 
-        Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
+        //Glide.with(this).load(R.drawable.powered).into(poweredByTMD);
+        Picasso.with(getActivity())
+                .load(R.drawable.powered)
+                .into(poweredByTMD);
 
         switch (dataOrigin) {
 
