@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'distribution'
-apply plugin: 'com.google.gms.google-services'
+
 
 distributions {
     main {
@@ -104,3 +104,4 @@ apt {
     }
 }
 
+apply plugin: 'com.google.gms.google-services'
